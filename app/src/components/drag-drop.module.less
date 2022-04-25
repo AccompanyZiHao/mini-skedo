@@ -1,0 +1,67 @@
+@import './common.module.less';
+
+.page {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.panel {
+  position: relative;
+  flex: 1;
+  .component-selected {
+    border: 1px solid @themeColor;
+    border-radius: 8px;
+  }
+}
+.prop-editor {
+  padding: 10px;
+  border-left: 1px solid #eee;
+  .prop-editor-inner {
+    width: 280px;
+    height: calc(100vh - 20px);
+    background-color: rgba(238, 238, 238, 0.4);
+    overflow-y: auto;
+  }
+}
+.root {
+  margin: 10px 20px;
+  background-color: rgba(238, 238, 238, 0.4);
+  border-radius: 8px;
+  height: calc(100vh - 20px);
+	overflow: auto;
+  .root-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+}
+
+.item-list {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #eee;
+  min-height: 100%;
+  .item {
+    margin: 10px;
+    width: 160px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    background-color: #f2f2f2;
+    .item-icon {
+      font-size: 24px;
+    }
+    .item-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-left: 4px;
+    }
+  }
+}

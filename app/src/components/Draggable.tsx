@@ -35,7 +35,12 @@ function useDrag() {
 }
 
 export const Draggable = defineComponent({
-  setup(props, { slots }) {
+  props: {
+    initialPosition: {
+      type: Array as any as PropType<[number, number]>,
+    },
+  },
+  setup({ initialPosition }, { slots }) {
     const { handlers, diffX, diffY } = useDrag();
 
     return () => {
@@ -45,6 +50,9 @@ export const Draggable = defineComponent({
         // onClick: props.onClick,
         Draggable: true,
         style: {
+          position: 'absolute',
+          top: `${initialPosition?.[1] || 0}px`,
+          left: `${initialPosition?.[0] || 0}px`,
           transform: `translate(${diffX.value}px, ${diffY.value}px)`,
         },
       });

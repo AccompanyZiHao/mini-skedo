@@ -25,3 +25,6 @@ pnpm dev
 
 pnpm config get registry
 pnpm config set registry http://registry.npm.taobao.org
+
+rxjs
+immutable

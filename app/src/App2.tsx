@@ -1,21 +1,22 @@
 import { defineComponent } from 'vue';
-import { Draggable } from './components/Draggable';
+import UIEditor from "./components/UIEditor";
 export default defineComponent({
   // components: {
   //   Draggable,
   // },
   setup() {
     return () => (
-      <Draggable>
-        <div
-          style={{
-            width: '100px',
-            height: '100px',
-            background: 'red',
-          }}
-        >
-        </div>
-      </Draggable>
+      <UIEditor />
+      // <Draggable>
+      //   <div
+      //     style={{
+      //       width: '100px',
+      //       height: '100px',
+      //       background: 'red',
+      //     }}
+      //   >
+      //   </div>
+      // </Draggable>
     );
   },
 });
