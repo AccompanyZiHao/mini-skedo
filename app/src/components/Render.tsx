@@ -3,6 +3,7 @@ import { Node } from '../object/Node';
 import classes from './drag-drop.module.less';
 import { Topics } from '../object/Topics';
 import { Draggable } from './Draggable';
+import { Editor } from '../object/Editor';
 
 type SkedoComponent = {
   node: Node;
@@ -18,6 +19,9 @@ export const Render = defineComponent({
       type: Node,
       required: true,
     },
+    editor: {
+      type: Editor,
+    }
   },
   setup({ root }) {
     const count = ref(0);
@@ -37,11 +41,12 @@ export const Render = defineComponent({
 });
 
 function RenderItem(node: Node) {
+  console.log('node :>> ', node);
   switch (node.getType()) {
     case 'image':
       return (
         <img
-          src={ ''}
+          src={ 'http://192.168.2.70/uploads/-/system/user/avatar/12/avatar.png?width=23'}
         />
       );
     case 'rect':
@@ -83,6 +88,7 @@ const Root = ({ node }: SkedoComponent) => {
 };
 
 function NodeRender(node: Node) {
+  console.log('node.getType() :>> ', node.getType());
   switch (node.getType()) {
     case 'root':
       return <Root node={node} />;
