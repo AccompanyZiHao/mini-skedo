@@ -12,6 +12,7 @@ export class Editor extends StateMachine<States, Actions, Topics> {
     this.root = new Node('root', 0, 0, 20, 10);
 
     this.describeAddComponent();
+    this.desribeDrag();
   }
 
   private describeAddComponent() {
@@ -66,6 +67,31 @@ export class Editor extends StateMachine<States, Actions, Topics> {
     // States.AddingComponent -> States.Start
     this.register(States.AddingComponent, States.Start, Actions.AUTO, () => {
       console.log('auto reset state');
+    });
+  }
+
+  private desribeDrag() {
+    let dargNode: Node;
+    this.register(
+      States.Start,
+      States.DragStart,
+      Actions.EvtDragStart,
+      (node: Node) => {
+        dargNode = node;
+      }
+    );
+    this.register(
+      States.DragStart,
+      States.Stoped,
+      Actions.EvtDragEnd,
+      (vec: [number, number]) => {
+        console.log('vec :>> ', vec);
+        dargNode!.setXY(vec);
+        dargNode!.emit(Topics.NodePositionMoved);
+      }
+    );
+    this.register(States.Stoped, States.Start, Actions.AUTO, () => {
+      console.log(123434);
     });
   }
 

@@ -7,6 +7,7 @@ import { Editor } from '../object/Editor';
 export default defineComponent({
   setup() {
     const editor = new Editor();
+    provide('editor', editor);
     return () => {
       return (
         <div class={classes.page}>

@@ -9,21 +9,29 @@ function addPropsToVNode(vNode: VNode, props: Record<string, any>): VNode {
   return vNode;
 }
 
-function useDrag() {
+function useDrag({
+  onDragstart,
+  onDragend,
+}: {
+  onDragstart?: () => void;
+  onDragend?: (vec: [number, number]) => void;
+}) {
   const value = new DragValue();
   const diffX = ref(0);
   const diffY = ref(0);
   const handlers = {
     onDragstart: (e: DragEvent) => {
       value.start(e);
+      onDragstart && onDragstart();
     },
     onDrag: (e: DragEvent) => {
       value.updated(e);
       diffX.value = value.getDiffX();
       diffY.value = value.getDiffY();
     },
-    onDragend: (e: DragEvent) => {
-      value.start(e);
+    ondragend(e: DragEvent) {
+      value.updated(e);
+      onDragend && onDragend([value.getDiffX(), value.getDiffY()]);
     },
   };
 
@@ -39,9 +47,18 @@ export const Draggable = defineComponent({
     initialPosition: {
       type: Array as any as PropType<[number, number]>,
     },
+    onDragstart: {
+      type: Function as PropType<() => void>,
+    },
+    onDragend: {
+      type: Function as PropType<(vec: [number, number]) => void>,
+    },
   },
-  setup({ initialPosition }, { slots }) {
-    const { handlers, diffX, diffY } = useDrag();
+  setup(props, { slots }) {
+    const { handlers, diffX, diffY } = useDrag({
+      onDragstart: props.onDragstart,
+      onDragend: props.onDragend,
+    });
 
     return () => {
       let vNode = slots.default!()[0];
@@ -51,8 +68,8 @@ export const Draggable = defineComponent({
         Draggable: true,
         style: {
           position: 'absolute',
-          top: `${initialPosition?.[1] || 0}px`,
-          left: `${initialPosition?.[0] || 0}px`,
+          top: `${props.initialPosition?.[1] || 0}px`,
+          left: `${props.initialPosition?.[0] || 0}px`,
           transform: `translate(${diffX.value}px, ${diffY.value}px)`,
         },
       });

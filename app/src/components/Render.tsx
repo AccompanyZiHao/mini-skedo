@@ -1,9 +1,10 @@
-import { defineComponent, ref } from 'vue';
+import { defineComponent, inject, ref } from 'vue';
 import { Node } from '../object/Node';
 import classes from './drag-drop.module.less';
 import { Topics } from '../object/Topics';
 import { Draggable } from './Draggable';
 import { Editor } from '../object/Editor';
+import { Actions } from '../object/editor.types';
 
 type SkedoComponent = {
   node: Node;
@@ -19,17 +20,14 @@ export const Render = defineComponent({
       type: Node,
       required: true,
     },
-    editor: {
-      type: Editor,
-    }
   },
-  setup({ root }) {
+  setup({ root }: { root: Node }) {
     const count = ref(0);
     root
       .on([
         Topics.NodeChildrenUpdated,
         Topics.NodePositionMoved,
-        Topics.NodeChildrenSelected,
+        // Topics.NodeChildrenSelected,
       ])
       .subscribe(() => {
         count.value++;
@@ -46,7 +44,9 @@ function RenderItem(node: Node) {
     case 'image':
       return (
         <img
-          src={ 'http://192.168.2.70/uploads/-/system/user/avatar/12/avatar.png?width=23'}
+          src={
+            'https://p26-passport.byteacctimg.com/img/user-avatar/4df5fcbe927ed531544e53686055b6e0~300x300.image'
+          }
         />
       );
     case 'rect':
@@ -63,9 +63,16 @@ function RenderItem(node: Node) {
 }
 
 const ItemRenderForDraggable = ({ node }: SkedoComponent) => {
+  const editor = inject('editor') as Editor;
   return (
     <Draggable
       initialPosition={[node.getX(), node.getY()]}
+      onDragstart={() => {
+        editor.dispatch(Actions.EvtDragStart, node);
+      }}
+      onDragend={(vec) => {
+        editor.dispatch(Actions.EvtDragEnd, vec);
+      }}
       style={{
         width: `${node.getW()}px`,
         height: `${node.getH()}px`,
@@ -76,19 +83,37 @@ const ItemRenderForDraggable = ({ node }: SkedoComponent) => {
   );
 };
 
-const Root = ({ node }: SkedoComponent) => {
+const RootEmpty = (editor: Editor) => {
+  return (
+    <div class={classes['root-empty']}>
+      <p>啥都没有，添加一些拖拽组件吧</p>
+    </div>
+  );
+};
+
+const RootRender = (children: Node[], editor: Editor) => {
+  return (
+    <>
+      {children.map((node, i) => {
+        return <Render key={i} root={node} editor={editor} />;
+      })}
+    </>
+  );
+};
+
+const Root = ({ node }: SkedoComponent, editor: Editor) => {
   const children = node.getChildren();
   return (
-    <div data-skedo="root">
-      {children.map((node, i) => {
+    <div data-skedo="root" class={classes['root']}>
+      {/* {children.map((node, i) => {
         return <Render key={i} root={node} />;
-      })}
+      })} */}
+      {children.length ? RootRender(children, editor) : RootEmpty(editor)}
     </div>
   );
 };
 
 function NodeRender(node: Node) {
-  console.log('node.getType() :>> ', node.getType());
   switch (node.getType()) {
     case 'root':
       return <Root node={node} />;

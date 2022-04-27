@@ -1,10 +1,9 @@
 import Emiter from './Emiter';
 import { Topics } from './Topics';
-import { List, Map as ImmutableMap, } from 'immutable';
-
+import { List, Map as ImmutableMap } from 'immutable';
 export class Node extends Emiter<Topics> {
   private nodeData: ImmutableMap<string, any>;
-  constructor(type: string, x: number, y: number, w: number, h: number,) {
+  constructor(type: string, x: number, y: number, w: number, h: number) {
     super();
     this.nodeData = ImmutableMap({
       type,
@@ -13,14 +12,16 @@ export class Node extends Emiter<Topics> {
       w,
       h,
       children: List<Node>(),
-    })
+    });
   }
 
-  public add(child: Node){
-    this.nodeData = this.nodeData.update("children", (children: Array<Node>)=>{
-      children.push(child)
-      return children
-    })
+  public add(child: Node) {
+    this.nodeData = this.nodeData.update(
+      'children',
+      (children: Array<Node>) => {
+        return children.push(child);
+      }
+    );
   }
 
   public getType() {
@@ -44,10 +45,12 @@ export class Node extends Emiter<Topics> {
   }
 
   public getChildren() {
-    return this.nodeData.get("children").toJS() as Node[];
+    return this.nodeData.get('children').toJS() as Node[];
   }
 
   public setXY(vec: [number, number]) {
-    this.nodeData = this.nodeData.set("x", vec[0] + this.nodeData.get("left")).set("y", vec[1] + this.nodeData.get("top"));
+    this.nodeData = this.nodeData
+      .set('x', vec[0] + this.nodeData.get('x'))
+      .set('y', vec[1] + this.nodeData.get('y'));
   }
 }
